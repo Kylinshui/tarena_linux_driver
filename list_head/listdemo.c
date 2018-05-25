@@ -22,8 +22,7 @@ struct employee{
 
 static struct employee *employeep = NULL;
 static struct employee *employee_temp = NULL;
-static struct list_head *pos = NULL;
-
+static struct list_head *pos = NULL,*pos1=NULL;
 
 static int __init listdemo_init(void){
 	int i;
@@ -61,11 +60,17 @@ static int __init listdemo_init(void){
 }
 
 static void __exit listdemo_exit(void){
+#if 0
 	int i;
 	for(i=0; i< EMPLOYEE_NUMBEROF;i++){
 		list_del(&employeep[i].list);
 	}
-
+#else
+	list_for_each_safe(pos,pos1,&employee_list){
+		employee_temp = list_entry(pos, struct employee, list);
+		list_del(&(employee_temp->list));
+	}
+#endif
 	kfree(employeep);
 }
 

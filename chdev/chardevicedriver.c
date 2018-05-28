@@ -16,6 +16,12 @@
 #define CHARDEVICEDRIVER_NAME "chardevicedriver"
 
 dev_t dev = 0;
+static struct cdev chardevicedriver_cdev;
+
+
+static struct file_operations chardevicedriver_fops = {
+	.owner = THIS_MODULE,
+};
 
 static int __init chardevicedriver_init(void){
 	int ret = -EFAULT;
@@ -31,10 +37,25 @@ static int __init chardevicedriver_init(void){
 
 	printk("CharDeviceDriver:Success to register char device\n");
 
+	//register cdev object
+	memset(&chardevicedriver_cdev,0,sizeof(struct cdev));
+	cdev_init(&chardevicedriver_cdev, &chardevicedriver_fops);
+
+	ret = cdev_add(&chardevicedriver_cdev, dev, CHARDEVICEDRIVER_COUNT);
+	if(ret < 0){
+		printk("Failure to add cdev to kernel\n");
+		return ret;
+	}
+	printk("CharDeviceDriver:Success to add cdev to kernel\n");
+
 	return ret;
 }
 
 static void __exit chardevicedriver_exit(void){
+
+	//delete cdev object 
+	cdev_del(&chardevicedriver_cdev);
+
 	unregister_chrdev_region(dev,CHARDEVICEDRIVER_COUNT);
 
 }

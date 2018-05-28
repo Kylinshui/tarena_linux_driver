@@ -9,6 +9,7 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
+#include <asm/uaccess.h>
 
 struct class *char_class;
 #define DEVICE_NAME "chardev"
@@ -24,15 +25,31 @@ static int chardevicedriver_open(struct inode *inode, struct file *filp){
 static ssize_t chardevicedriver_read(struct file *filp, char __user *buf,
 			size_t count, loff_t *f_pos){
 	
-	printk("%s---------Entry\n",__func__);
-	return 0;
+	char sbuf[100] = "Test string in kernel space for writing to user space\n";
+	int ret;
+
+	ret = copy_to_user(buf, sbuf,count);
+	if(ret){
+		return -EFAULT;
+	}
+	printk("%s---------kernel space writing string to user\n",__func__);
+
+	return count;
 }
 
 static ssize_t chardevicedriver_write(struct file *filp, const char __user *buf,
 			size_t count, loff_t *f_pos){
-	
-	printk("%s---------Entry\n",__func__);
-	return 0;
+	char sbuf[100]={0};
+	//read string from user space
+	int ret;
+
+	ret = copy_from_user(sbuf,buf,count);
+	if(ret)
+	  return -EFAULT;
+
+	printk("%s---------kernel space read string from user space :%s\n",__func__,sbuf);
+
+	return count;
 }
 
 static int chardevicedriver_ioctl(struct inode *inode, struct file *filp,

@@ -9,7 +9,7 @@
 #include <fcntl.h>
 
 int fd;
-char buf[10];
+char buf[100];
 char ch;
 
 int main(int argc, char **argv){
@@ -23,18 +23,24 @@ int main(int argc, char **argv){
 	while(1){
 		printf("Starting to test deivce:/dev/chardevicedriver\n");
 		printf("\t1. Press key\'q\' to exit...\n");
-		printf("\t2. Press key\'o\' to operate_device...\n");
+		printf("\t2. Press key\'r\' to read string from kernel...\n");
+		printf("\t3. Press key\'w\' to write string to kernel...\n");
 
 		ch = getchar();
+		getchar();
+
 		if('q'==ch){
 			break;
 		}
 
 		switch(ch){
-			case 'o':
-				read(fd, buf, 0);
-				write(fd, buf,0);
-				ioctl(fd,0,0);
+			case 'r':
+				read(fd, buf, 100);
+				printf("User space read string from kernel:%s\n", buf);
+				//ioctl(fd,0,0);
+				break;
+			case 'w':
+				write(fd,"hello i am user space",22);
 				break;
 			default:
 				break;

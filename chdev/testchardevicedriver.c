@@ -23,6 +23,7 @@ int main(int argc, char **argv){
 	while(1){
 		printf("Starting to test deivce:/dev/chardevicedriver\n");
 		printf("\t1. Press key\'q\' to exit...\n");
+		printf("\t2. Press key\'o\' to operate_device...\n");
 
 		ch = getchar();
 		if('q'==ch){
@@ -30,6 +31,11 @@ int main(int argc, char **argv){
 		}
 
 		switch(ch){
+			case 'o':
+				read(fd, buf, 0);
+				write(fd, buf,0);
+				ioctl(fd,0,0);
+				break;
 			default:
 				break;
 		}

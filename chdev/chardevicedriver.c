@@ -19,8 +19,47 @@ dev_t dev = 0;
 static struct cdev chardevicedriver_cdev;
 
 
+static int chardevicedriver_open(struct inode *inode, struct file *filp){
+	printk("%s---------Entry\n",__func__);
+
+	return 0;
+}
+
+static ssize_t chardevicedriver_read(struct file *filp, char __user *buf,
+			size_t count, loff_t *f_pos){
+	
+	printk("%s---------Entry\n",__func__);
+	return 0;
+}
+
+static ssize_t chardevicedriver_write(struct file *filp, const char __user *buf,
+			size_t count, loff_t *f_pos){
+	
+	printk("%s---------Entry\n",__func__);
+	return 0;
+}
+
+static int chardevicedriver_ioctl(struct inode *inode, struct file *filp,
+			unsigned int cmd, unsigned long arg){
+	
+	printk("%s---------Entry\n",__func__);
+
+	return 0;
+}
+
+static int chardevicedriver_release(struct inode *inode, struct file *filp){
+	
+	printk("%s---------Entry\n",__func__);
+
+	return 0;
+}
 static struct file_operations chardevicedriver_fops = {
 	.owner = THIS_MODULE,
+	.open  = chardevicedriver_open,
+	.read  = chardevicedriver_read,
+	.write = chardevicedriver_write,
+	.unlocked_ioctl = chardevicedriver_ioctl,
+	.release = chardevicedriver_release,
 };
 
 static int __init chardevicedriver_init(void){

@@ -10,11 +10,17 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <asm/uaccess.h>
+#include <linux/ioctl.h>
 
 struct class *char_class;
 #define DEVICE_NAME "chardev"
 #define CHARMAJOR 300
 #define CHARMINOR 0
+//对幻数的编号千万不能重复定义，如ioctl-number.txt
+//_IO(type,nr)定义无参数的命令
+#define MISC_IOC_MAGIC 'M'
+#define LED_ON  _IO(MISC_IOC_MAGIC, 0x01)
+#define LED_OFF _IO(MISC_IOC_MAGIC, 0x02)
 
 static int chardevicedriver_open(struct inode *inode, struct file *filp){
 	printk("%s---------Entry\n",__func__);
@@ -54,8 +60,19 @@ static ssize_t chardevicedriver_write(struct file *filp, const char __user *buf,
 
 static int chardevicedriver_ioctl(struct inode *inode, struct file *filp,
 			unsigned int cmd, unsigned long arg){
-	
-	printk("%s---------Entry\n",__func__);
+	if(_IOC_TYPE(cmd)!= MISC_IOC_MAGIC)
+		return -EFAULT;
+
+	switch(cmd){
+		case LED_ON:
+			printk("led....on\n");
+			break;
+		case LED_OFF:
+			printk("led....off\n");
+			break;
+		default:
+			break;
+	}	
 
 	return 0;
 }

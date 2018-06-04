@@ -111,7 +111,9 @@ static int __init devicemodelbus_init(void){
 }
 
 static void __exit devicemodelbus_exit(void){
+	device_unregister(&devicemodelbus_dev);
 	bus_remove_file(&devicemodelbus_bus_type, &bus_attr_bus_name);
+	bus_remove_file(&devicemodelbus_bus_type, &bus_attr_bus_modalias);
 	bus_unregister(&devicemodelbus_bus_type);
 }
 
